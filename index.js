@@ -4,7 +4,7 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-const DB_URL = "mongodb+srv://saniaf386_db_user:IhzfyauOPTugg3X5@cluster0.r3sccse.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const DB_URL = process.env.atlas_URL;
 mongoose.connect(DB_URL)
 .then(() => console.log("✅ Connected to MongoDB"))
 .catch((err) => console.error("❌ MongoDB connection error:", err));
