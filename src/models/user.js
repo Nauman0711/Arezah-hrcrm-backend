@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
     accountNumber: { type: String },
     branchCode: { type: String },
     gender: { type: String },
-
+    company: { type: mongoose.Schema.Types.ObjectId, ref: "Company", required: true },
     // Departments (reference IDs)
     departments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Department' }],
 }, { timestamps: true });

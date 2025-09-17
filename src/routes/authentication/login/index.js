@@ -44,7 +44,8 @@ router.post('/', async (req, res) => {
                 departments: user.departments,
                 employeeId: user.employeeId,
                 joiningDate: user.joiningDate,
-                leavingDate: user.leavingDate
+                leavingDate: user.leavingDate,
+                comapny: user.company
             }
         });
 

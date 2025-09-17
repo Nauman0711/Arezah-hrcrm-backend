@@ -29,7 +29,6 @@ router.post('/', authMiddleware, authorize(['ceo', 'admin', 'manager']), async (
     try {
         const creatorId = req.user.userId;
         const creator = await User.findById(creatorId);
-
         if (!creator || !["ceo", "admin", "manager"].includes(creator.type)) {
             return res.status(403).json({ message: "Access denied. Only CEO, Admin, or Manager can add employees." });
         }
