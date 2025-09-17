@@ -1,19 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const Department = require("../../../models/department");
-const User = require("../../../models/user");
 const authMiddleware = require("../../../middlewares/auth");
 const authorize = require("../../../middlewares/authorize");
+const companyScope = require("../../../middlewares/company-scope");
 
-router.delete("/:id", authMiddleware, authorize(["ceo"]), async (req, res) => {
+router.delete("/:id", authMiddleware, companyScope, authorize(["ceo"]), async (req, res) => {
   try {
-    const currentUser = await User.findById(req.user.userId).select("company");
-    if (!currentUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
     const department = await Department.findOneAndDelete({
       _id: req.params.id,
-      company: currentUser.company,
+      company: req.companyId,
     });
 
     if (!department) {

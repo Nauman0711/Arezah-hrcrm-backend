@@ -3,14 +3,13 @@ const router = express.Router();
 const User = require('../../../models/user');
 const authMiddleware = require('../../../middlewares/auth');
 const authorize = require('../../../middlewares/authorize');
+const companyScope = require('../../../middlewares/company-scope');
 
-router.put('/:id', authMiddleware, authorize(['ceo']), async (req, res) => {
+router.put('/:id', authMiddleware, companyScope, authorize(['ceo']), async (req, res) => {
     try {
         const { id } = req.params;
-        const currentUser = await User.findById(req.user.userId).select("company");
-
         const employee = await User.findOneAndUpdate(
-            { _id: id, company: currentUser.company },
+            { _id: id, company: req.companyId },
             req.body,
             { new: true }
         ).select("-password -otp -otpExpires");

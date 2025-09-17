@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const User = require('../../../models/user');
 const authMiddleware = require('../../../middlewares/auth');
+const companyScope = require('../../../middlewares/company-scope');
 
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/:id', authMiddleware, companyScope, async (req, res) => {
     try {
         const requestedId = req.params.id;
         const { userId, type } = req.user;

@@ -3,11 +3,11 @@ const router = express.Router();
 const User = require('../../../models/user');
 const authMiddleware = require('../../../middlewares/auth');
 const authorize = require('../../../middlewares/authorize');
+const companyScope = require('../../../middlewares/company-scope');
 
-router.get('/', authMiddleware, authorize(['ceo', 'admin', 'manager']), async (req, res) => {
-    const currentUser = await User.findById(req.user.userId).select("company");
+router.get('/', authMiddleware, companyScope, authorize(['ceo', 'admin', 'manager']), async (req, res) => {
     try {
-        const employees = await User.find({ type: 'employee', company: currentUser.company }).select('-password -otp -otpExpires').populate('departments');
+        const employees = await User.find({ type: 'employee', company: req.companyId }).select('-password -otp -otpExpires').populate('departments');
         res.json(employees);
     } catch (error) {
         console.error("Error fetching employees:", error);

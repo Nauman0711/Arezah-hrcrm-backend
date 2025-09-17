@@ -3,8 +3,9 @@ const router = express.Router();
 const User = require('../../../models/user');
 const authMiddleware = require('../../../middlewares/auth');
 const authorize = require('../../../middlewares/authorize');
+const companyScope = require('../../../middlewares/company-scope');
 
-router.post('/', authMiddleware, authorize(['ceo']), async (req, res) => {
+router.post('/', authMiddleware, companyScope, authorize(['ceo']), async (req, res) => {
     const {
         email,
         password,
@@ -63,7 +64,7 @@ router.post('/', authMiddleware, authorize(['ceo']), async (req, res) => {
             gender,
             departments,
             employeeId,
-            company: creator.company
+            company: req.companyId
         });
 
         await employee.save();

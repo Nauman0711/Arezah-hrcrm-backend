@@ -1,16 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const Department = require("../../../models/department");
-const User = require("../../../models/user"); // ✅ you forgot to import this
 const authMiddleware = require("../../../middlewares/auth");
+const companyScope = require("../../../middlewares/company-scope");
 
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, companyScope, async (req, res) => {
   try {
-    const currentUser = await User.findById(req.user.userId).select("company");
-    if (!currentUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    const departments = await Department.find({ company: currentUser.company });
+    const departments = await Department.find({ company: req.companyId });
     res.json(departments);
   } catch (error) {
     console.error("Error fetching departments:", error);
