@@ -1,74 +1,42 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
+require("dotenv").config();
+
 const app = express();
-const PORT = 3000;
 
+app.use(cors());
 app.use(express.json());
-const DB_URL = process.env.atlas_URL;
-mongoose.connect(DB_URL)
-.then(() => console.log("✅ Connected to MongoDB"))
-.catch((err) => console.error("❌ MongoDB connection error:", err));
 
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true }
-});
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.error("MongoDB connection error:", err));
 
-const User = mongoose.model("User", userSchema);
+// Auth routes
+app.use("/api/auth/register", require("./src/routes/authentication/registeration/index"));
+app.use("/api/auth/login", require("./src/routes/authentication/login/index"));
+app.use("/api/auth/forgot-password", require("./src/routes/authentication/forgot-password/index"));
+app.use("/api/auth/logout", require("./src/routes/authentication/logout/index"));
+app.use("/api/auth/refresh-token", require("./src/routes/authentication/refresh-token/index"));
+app.use("/api/auth/reset-password", require("./src/routes/authentication/reset-password/index"));
+app.use("/api/auth/verify-otp", require("./src/routes/authentication/verify-otp/index"));
 
-// 👉 CREATE
-app.post("/users", async (req, res) => {
-  try {
-    const user = new User({
-      name: req.body.name,
-      email: req.body.email
-    });
-    await user.save();
-    res.status(201).json(user);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
+// Employee management routes
+app.use("/api/employe/all", require("./src/routes/employes/all/index"));
+app.use("/api/employe/add", require("./src/routes/employes/add"));
+app.use("/api/employe/delete", require("./src/routes/employes/delete/index"));
+app.use("/api/employe", require("./src/routes/employes/update/index"));
+app.use("/api/employe", require("./src/routes/employes/update/index"));
 
-app.get("/users", async (req, res) => {
-  const users = await User.find();
-  res.json(users);
-});
 
-app.get("/users/:id", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// Department routes
+app.use("/api/department/all", require("./src/routes/department/all/index"));
+app.use("/api/department/add", require("./src/routes/department/add"));
+app.use("/api/department/delete", require("./src/routes/department/delete/index"));
+app.use("/api/department", require("./src/routes/department/update/index"));
+app.use("/api/department", require("./src/routes/department/update/index"));
 
-app.put("/users/:id", async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { name: req.body.name, email: req.body.email },
-      { new: true }
-    );
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-app.delete("/users/:id", async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json({ message: "User deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(` Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
