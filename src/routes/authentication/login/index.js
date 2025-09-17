@@ -10,8 +10,7 @@ router.post('/', async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ message: 'Email and password are required' });
         }
-
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).populate('company').populate('departments');
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
@@ -20,6 +19,10 @@ router.post('/', async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
+        // if (!user.isVerified) {
+        //     return res.status(403).json({ message: 'Your account is not verified. Please verify before logging in.' });
+        // }
+
         if (fcmToken) {
             user.fcmToken = fcmToken;
             await user.save();

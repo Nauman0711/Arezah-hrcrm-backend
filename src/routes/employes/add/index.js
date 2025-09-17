@@ -4,7 +4,7 @@ const User = require('../../../models/user');
 const authMiddleware = require('../../../middlewares/auth');
 const authorize = require('../../../middlewares/authorize');
 
-router.post('/', authMiddleware, authorize(['ceo', 'admin', 'manager']), async (req, res) => {
+router.post('/', authMiddleware, authorize(['ceo']), async (req, res) => {
     const {
         email,
         password,
@@ -29,7 +29,10 @@ router.post('/', authMiddleware, authorize(['ceo', 'admin', 'manager']), async (
     try {
         const creatorId = req.user.userId;
         const creator = await User.findById(creatorId);
-        if (!creator || !["ceo", "admin", "manager"].includes(creator.type)) {
+        if (["ceo"].includes(type)) {
+            return res.status(403).json({ message: "CEO cannot be added as employee" });
+        }
+        if (!creator || !["ceo"].includes(creator.type)) {
             return res.status(403).json({ message: "Access denied. Only CEO, Admin, or Manager can add employees." });
         }
 
@@ -59,13 +62,14 @@ router.post('/', authMiddleware, authorize(['ceo', 'admin', 'manager']), async (
             branchCode,
             gender,
             departments,
-            employeeId
+            employeeId,
+            company: creator.company
         });
 
         await employee.save();
 
         res.status(201).json({
-            message: "✅ Employee created successfully",
+            message: "Employee created successfully",
             employee: {
                 _id: employee._id,
                 employeeId: employee.employeeId,

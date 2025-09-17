@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     designation: { type: String },
+    isVerified: { type: Boolean },
     address: { type: String },
     cnicNumber: { type: String },
     contactNumber: { type: String },

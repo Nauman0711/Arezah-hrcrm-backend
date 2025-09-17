@@ -4,10 +4,14 @@ const User = require('../../../models/user');
 const authMiddleware = require('../../../middlewares/auth');
 const authorize = require('../../../middlewares/authorize');
 
-router.delete('/:id', authMiddleware, authorize(['ceo', 'admin', 'manager']), async (req, res) => {
+router.delete('/:id', authMiddleware, authorize(['ceo']), async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedEmployee = await User.findByIdAndDelete(id);
+        const currentUser = await User.findById(req.user.userId).select("company");
+        if (!currentUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const deletedEmployee = await User.findByIdAndDelete({ _id: id, company: currentUser.company });
         if (!deletedEmployee) {
             return res.status(404).json({ message: 'Employee not found' });
         }

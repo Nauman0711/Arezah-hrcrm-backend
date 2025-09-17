@@ -1,0 +1,77 @@
+{
+    "info": {
+      "name": "Company Management API",
+      "_postman_id": "12345678-abcd-efgh-ijkl-1234567890",
+      "description": "API collection for authentication, employees, and departments",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Auth - Register",
+        "request": {
+          "method": "POST",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "url": "{{baseUrl}}/api/auth/register",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"123456\",\n  \"companyName\": \"TechCorp\"\n}"
+          }
+        }
+      },
+      {
+        "name": "Auth - Login",
+        "request": {
+          "method": "POST",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "url": "{{baseUrl}}/api/auth/login",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"123456\"\n}"
+          }
+        }
+      },
+      {
+        "name": "Employees - Get All",
+        "request": {
+          "method": "GET",
+          "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+          "url": "{{baseUrl}}/api/employe/all"
+        }
+      },
+      {
+        "name": "Employees - Add",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "url": "{{baseUrl}}/api/employe/add",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Smith\",\n  \"email\": \"alice@example.com\",\n  \"password\": \"password123\",\n  \"type\": \"employee\"\n}"
+          }
+        }
+      },
+      {
+        "name": "Departments - Add",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "url": "{{baseUrl}}/api/department/add",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"name\": \"HR\"\n}"
+          }
+        }
+      }
+    ],
+    "variable": [
+      { "key": "baseUrl", "value": "http://localhost:5000" },
+      { "key": "token", "value": "" }
+    ]
+  }
+  
