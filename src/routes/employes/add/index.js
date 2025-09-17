@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../../../models/user');
 const authMiddleware = require('../../../middlewares/auth');
+const authorize = require('../../../middlewares/authorize');
 
 router.post('/', authMiddleware, authorize(['ceo', 'admin', 'manager']), async (req, res) => {
     const {
