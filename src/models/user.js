@@ -34,11 +34,12 @@ const userSchema = new mongoose.Schema({
 
     status: {
         type: String,
-        enum: ["active", "probation", "on_leave", "terminated", "resigned"],
+        enum: ["active", "probation", "terminated", "resigned"],
         default: "active",
     },
 
     accountNumber: { type: String },
+    accountHolderName: { type: String },
     branchCode: { type: String },
     gender: { type: String },
     company: { type: mongoose.Schema.Types.ObjectId, ref: "Company", required: true },

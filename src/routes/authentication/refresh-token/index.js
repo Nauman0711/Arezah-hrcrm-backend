@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
       if (err.name === "TokenExpiredError") {
         // Issue a new token since the old one is expired but valid
         const newToken = jwt.sign(
-          { userId: decoded.userId, role: decoded.role },
+          { userId: decoded._id, type: decoded.type, company: decoded.company._id},
           process.env.SECRET_KEY,
           { expiresIn: "24h" }
         );

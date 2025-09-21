@@ -7,7 +7,14 @@ const companyScope = require('../../../middlewares/company-scope');
 
 router.get('/', authMiddleware, companyScope, authorize(['ceo', 'admin', 'manager']), async (req, res) => {
     try {
-        const employees = await User.find({ type: 'employee', company: req.companyId }).select('-password -otp -otpExpires').populate('departments');
+        const { departmentId } = req.query;
+        const filter = { type: 'employee', company: req.companyId };
+        if (departmentId) {
+            filter.departments = departmentId; // if it's a single dept ref
+            // OR use $in if employees can belong to multiple departments:
+            // filter.departments = { $in: [departmentId] };
+        }
+        const employees = await User.find(filter).select('-password -otp -otpExpires').populate('departments');
         res.json(employees);
     } catch (error) {
         console.error("Error fetching employees:", error);

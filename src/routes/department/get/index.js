@@ -10,7 +10,7 @@ router.get("/:id", authMiddleware, companyScope, authorize(["ceo"]), async (req,
     const department = await Department.findOne({
       _id: req.params.id,
       company: req.companyId,
-    });
+    }).populate('departments');
 
     if (!department) {
       return res.status(404).json({ message: "Department not found or not in your company" });
