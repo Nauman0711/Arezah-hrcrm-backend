@@ -12,7 +12,7 @@ router.get('/:id', authMiddleware, companyScope, async (req, res) => {
             ['ceo', 'admin', 'manager'].includes(type) ||
             (type === 'employee' && userId === requestedId)
         ) {
-            const user = await User.findById(requestedId).select('-password -otp -otpExpires');
+            const user = await User.findById(requestedId).select('-password -otp -otpExpires').populate('departments');
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });
             }

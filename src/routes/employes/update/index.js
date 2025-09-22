@@ -12,7 +12,7 @@ router.put('/:id', authMiddleware, companyScope, authorize(['ceo']), async (req,
             { _id: id, company: req.companyId },
             req.body,
             { new: true }
-        ).select("-password -otp -otpExpires");
+        ).select("-password -otp -otpExpires").populate('departments');
 
         if (!employee) {
             return res.status(404).json({ message: 'Employee not found' });
